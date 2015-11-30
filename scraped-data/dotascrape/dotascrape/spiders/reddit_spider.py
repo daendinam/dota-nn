@@ -10,6 +10,7 @@ class RedditSpider(scrapy.Spider):
        # "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
        # "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/"
     ]
+    PAGE_LIMIT = 100
     
     def parse(self, response):
         yield scrapy.Request(response.url, callback=self.parse_follow_next_page)
@@ -37,9 +38,11 @@ class RedditSpider(scrapy.Spider):
             yield scrapy.Request(url, callback=self.parse_comments)
             
         next_page = response.xpath("//a[contains(@rel, 'nofollow') and contains(@rel, 'next')]/@href")
-        if (next_page):
+        if (next_page and page_count <= PAGE_LIMIT):
+            page_count += 1
             url = response.urljoin(next_page[0].extract())
-            yield scrapy.Request(url, self.parse_follow_next_page)  
+            yield scrapy.Request(url, self.parse_follow_next_page)
+    parse_follow_next_page.page_count = 0
             
             
     # parse:
