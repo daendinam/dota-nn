@@ -10,7 +10,8 @@ class RedditSpider(scrapy.Spider):
        # "http://www.dmoz.org/Computers/Programming/Languages/Python/Books/",
        # "http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/"
     ]
-    PAGE_LIMIT = 100
+    PAGE_LIMIT = 3
+    page_count = 0
     
     def parse(self, response):
         yield scrapy.Request(response.url, callback=self.parse_follow_next_page)
@@ -25,8 +26,8 @@ class RedditSpider(scrapy.Spider):
             #"//div[@class="usertext-body may-blank-within md-container "]/div[@class="md"]/p"):
             #extract comment text
             item = DotaCommentItem()
-            item['title'] = "title default"
-            item['link'] = "link default"
+            item['title'] = "title default, Page: " + str(self.page_count)
+            item['link'] = response.url
             item['desc'] = comment.xpath('text()').extract()
             yield item      
         
@@ -38,11 +39,10 @@ class RedditSpider(scrapy.Spider):
             yield scrapy.Request(url, callback=self.parse_comments)
             
         next_page = response.xpath("//a[contains(@rel, 'nofollow') and contains(@rel, 'next')]/@href")
-        if (next_page and page_count <= PAGE_LIMIT):
-            page_count += 1
+        self.page_count += 1
+        if (next_page and self.page_count < self.PAGE_LIMIT):
             url = response.urljoin(next_page[0].extract())
             yield scrapy.Request(url, self.parse_follow_next_page)
-    parse_follow_next_page.page_count = 0
             
             
     # parse:
