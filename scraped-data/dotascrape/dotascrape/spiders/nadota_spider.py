@@ -1,5 +1,5 @@
 import scrapy
-import cfscrape
+# import cfscrape
 
 from dotascrape.items import DotaCommentItem
 
@@ -23,7 +23,7 @@ USER_AGENT_LIST = [
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
     'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; Trident/5.0)',
     'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0',
-    'Mozilla/5.0 (iPad; U; CPU OS 5_1 like Mac OS X) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.10 UCBrowser/3.4.3.532' 
+    'Mozilla/5.0 (iPad; U; CPU OS 5_1 like Mac OS X) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.10 UCBrowser/3.4.3.532'
 ]
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36'
@@ -36,7 +36,7 @@ class RedditSpider(scrapy.Spider):
     name = "nadota"
     allowed_domains = ["nadota.com"]
     #allowed_domains = ["googleusercontent.com"]
-    
+
     start_urls = [
        "http://nadota.com/forumdisplay.php?29-DotA-Chat"
        #"https://webcache.googleusercontent.com/search?q=cache:5xGpTDffnQUJ:nadota.com/forumdisplay.php%3F29-DotA-Chat+&cd=1&hl=en&ct=clnk&gl=ca"
@@ -47,14 +47,14 @@ class RedditSpider(scrapy.Spider):
     #def parse_start_url(self, response):
     #    self.cookie = response.headers.get('Set-Cookie').split(';')[0]
     #    return super(Spider, self).parse_start_url(response)
-    
-    
-    #def start_requests(self): 
+
+
+    #def start_requests(self):
     #    cfscraper = cfscrape.create_scraper()
     #    filename = 'nadota.html'
     #    with open(filename, 'wb') as f:
     #        f.write(cfscraper.get("http://nadota.com/forumdisplay.php?29-DotA-Chat").content)
-    #    
+    #
     #    cf_requests = []
     #    for url in self.start_urls:
     #        token, agent = cfscrape.get_tokens(url, USER_AGENT)
@@ -63,7 +63,7 @@ class RedditSpider(scrapy.Spider):
     #        print "useragent in cfrequest: " , agent
     #        print "token in cfrequest: ", token
     #    return cf_requests
-        
+
     def parse(self, response):
         #grab all comment links
         for commentlink in response.xpath("//a[contains(@id, 'thread_title')]/@href"):
@@ -88,9 +88,9 @@ class RedditSpider(scrapy.Spider):
             item['link'] = "link default"
             item['desc'] = comment.xpath('text()').extract()
             yield item
-        
-        
 
 
-            
-            
+
+
+
+
