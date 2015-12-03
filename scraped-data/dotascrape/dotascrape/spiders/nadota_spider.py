@@ -27,12 +27,8 @@ USER_AGENT_LIST = [
 ]
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36'
-# todo:
-# * paging
-# * skip stickied threads
-# * circumvent ddos protection, googlecache?
 
-class RedditSpider(scrapy.Spider):
+class NadotaSpider(scrapy.Spider):
     name = "nadota"
     allowed_domains = ["nadota.com"]
     #allowed_domains = ["googleusercontent.com"]
@@ -42,6 +38,8 @@ class RedditSpider(scrapy.Spider):
        #"https://webcache.googleusercontent.com/search?q=cache:5xGpTDffnQUJ:nadota.com/forumdisplay.php%3F29-DotA-Chat+&cd=1&hl=en&ct=clnk&gl=ca"
     ]
 
+    PAGE_LIMIT = 2
+    page_count = 0
     #override parse_start_url of Spider class to deal with cloudflare cookie
     #https://mktums.github.io/article/dealing-with-cloudflare-in-scrapy.html
     #def parse_start_url(self, response):
@@ -65,13 +63,7 @@ class RedditSpider(scrapy.Spider):
     #    return cf_requests
 
     def parse(self, response):
-        #grab all comment links
-        for commentlink in response.xpath("//a[contains(@id, 'thread_title')]/@href"):
-            #<a class="title threadtitle_unread"/>  OR <a class="title"/> <-- comment links
-            #alt ^ - <a id="thread_title_####"/>
-            #url = "https://webcache.googleusercontent.com/search?q=cache:" + response.urljoin(commentlink.extract())
-            url = response.urljoin(commentlink.extract())
-            yield scrapy.Request(url, callback=self.parse_comments)
+            yield scrapy.Request(response.url, callback=self.parse_follow_next_page)
 
     def parse_comments(self, response):
         # regular post:
@@ -82,15 +74,33 @@ class RedditSpider(scrapy.Spider):
         # ...
         for comment in response.xpath(
             "//div[contains(@id, 'post_message')]/blockquote[contains(@class, 'postcontent')]"):
-            #extract comment text
+            #extract comment info
             item = DotaCommentItem()
-            item['title'] = "title default"
-            item['link'] = "link default"
+            item['link'] = response.url
             item['desc'] = comment.xpath('text()').extract()
+            item['user'] = comment.xpath("../../../../..//a[contains(@class, 'username')]/strong/text()").extract()
+            # some users have font colours
+            if (not item['user']):
+                item['user'] = comment.xpath("../../../../..//a[contains(@class, 'username')]/strong/font/text()").extract()
             yield item
+        
+        next_comment_page = response.xpath("//a[contains(@rel, 'next') and contains(@title, 'Next Page')]/@href")
+        if (next_comment_page):
+            # go to next page of current thread and parse comments
+            url = response.urljoin(next_comment_page[0].extract())
+            yield scrapy.Request(url, self.parse_comments)
 
+    def parse_follow_next_page(self, response):
+        # grab all thread links
+        for commentlink in response.xpath("//a[contains(@id, 'thread_title')]/@href"):
+            # <a class="title threadtitle_unread"/>  OR <a class="title"/> <-- comment links
+            url = response.urljoin(commentlink.extract())
+            yield scrapy.Request(url, callback=self.parse_comments)
 
-
-
-
-
+        next_page = response.xpath("//a[contains(@rel, 'next') and contains(@title, 'Next Page')]/@href")
+        self.page_count += 1
+        if (next_page and self.page_count < self.PAGE_LIMIT):
+            # go to next page if exists and page limit not hit
+            url = response.urljoin(next_page[0].extract())
+            yield scrapy.Request(url, self.parse_follow_next_page)
+            
