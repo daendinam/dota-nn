@@ -8,7 +8,7 @@ class RedditSpider(scrapy.Spider):
     start_urls = [
        "http://www.reddit.com/r/dota2/"
     ]
-    PAGE_LIMIT = 1
+    PAGE_LIMIT = 10
     page_count = 0
 
     def parse(self, response):

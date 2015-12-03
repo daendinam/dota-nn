@@ -38,7 +38,7 @@ class NadotaSpider(scrapy.Spider):
        #"https://webcache.googleusercontent.com/search?q=cache:5xGpTDffnQUJ:nadota.com/forumdisplay.php%3F29-DotA-Chat+&cd=1&hl=en&ct=clnk&gl=ca"
     ]
 
-    PAGE_LIMIT = 2
+    PAGE_LIMIT = 10
     page_count = 0
     #override parse_start_url of Spider class to deal with cloudflare cookie
     #https://mktums.github.io/article/dealing-with-cloudflare-in-scrapy.html
