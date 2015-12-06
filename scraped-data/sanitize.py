@@ -15,6 +15,8 @@
 
 import sys, getopt
 import csv
+import re
+import string
 
 def main(argv):
     inputcsv = ''
@@ -76,9 +78,25 @@ def cleanup(inputfile, intermediate):
                 comment = row[desc_col]
                 # debug, don't do entire file yet
                 if rownum > 67:
-                    print "Username: " + username
-                    print "Link: " + threadlink
-                    print "Comment: " + comment
+                    #print "Username: " + username
+                    #print "Link: " + threadlink
+
+                    # replace all whitespace with single space
+                    comment = re.sub('\s+', ' ', comment).strip()
+                    # remove newlines and return cairrage
+                    comment = re.sub('[\n\r]+', '', comment)
+                    allowed = string.digits + string.letters + string.punctuation
+                    # filter out non-alphanumeric/punctuation
+                    filter(allowed.__contains__, comment)
+                    # filter out ascii chars? '/xf802'
+                    # replace excessive(?) repetiion with 1 'yeeees' -> 'yes'
+                    # replace multiple punctuation marks with just 1
+                    # deal with spacing @ punctuation 'Yes . Haha , .'
+                    # etc
+
+
+                    print "Comment(Literal): " + repr(comment)
+
                 if rownum > 100:
                     exit(0)
             rownum += 1
