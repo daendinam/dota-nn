@@ -9,10 +9,6 @@
 # way to dismiss keyboard spam non-words versus non-dictionary legit words (ie. hero names)?
 # after all post-by-post trimming, trim entire set by dictionary size results
 
-
-# sanitize entry by entry to outputA
-# use outputA to do 2nd pass on dictionary/vocab/etc for final outputB
-
 import sys, getopt
 import csv
 import re
@@ -77,27 +73,30 @@ def cleanup(inputfile, intermediate):
                 threadlink = row[link_col]
                 comment = row[desc_col]
                 # debug, don't do entire file yet
-                if rownum > 67:
+                if rownum > 90:
                     #print "Username: " + username
                     #print "Link: " + threadlink
 
-                    # replace all whitespace with single space
-                    comment = re.sub('\s+', ' ', comment).strip()
                     # remove newlines and return cairrage
                     comment = re.sub('[\n\r]+', '', comment)
-                    allowed = string.digits + string.letters + string.punctuation
                     # filter out non-alphanumeric/punctuation
-                    filter(allowed.__contains__, comment)
-                    # filter out ascii chars? '/xf802'
+                    allowed = string.digits + string.letters + string.punctuation + ' '
+                    comment = filter(allowed.__contains__, comment)
+                    # replace all whitespace with single space
+                    comment = re.sub('\s+', ' ', comment).strip()
                     # replace excessive(?) repetiion with 1 'yeeees' -> 'yes'
+                    
                     # replace multiple punctuation marks with just 1
+                    
                     # deal with spacing @ punctuation 'Yes . Haha , .'
-                    # etc
-
-
+                    
+                    # deal with jibberish?
+                    
+                    # put 1 space between words and punctuation, and between a word and " 's "
+                    
                     print "Comment(Literal): " + repr(comment)
 
-                if rownum > 100:
+                if rownum > 150:
                     exit(0)
             rownum += 1
 
