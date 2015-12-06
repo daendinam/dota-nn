@@ -85,15 +85,18 @@ def cleanup(inputfile, intermediate):
                     # replace all whitespace with single space
                     comment = re.sub('\s+', ' ', comment).strip()
                     # replace excessive(?) repetiion with 1 'yeeees' -> 'yes'
-                    
+                    # ^ can only really be done from 3+ to 3 i think
+
                     # replace multiple punctuation marks with just 1
-                    
-                    # deal with spacing @ punctuation 'Yes . Haha , .'
-                    
+                    # replace multiple DIFFERENT punctuation with '.'
+
                     # deal with jibberish?
-                    
+                    # alphanumeric jibberish will be trimmed in vocab
+                    # deal with punctuation jibberish
+                    #   -> if its not removed above, can replace it with nothing at all?
+
                     # put 1 space between words and punctuation, and between a word and " 's "
-                    
+
                     print "Comment(Literal): " + repr(comment)
 
                 if rownum > 150:
