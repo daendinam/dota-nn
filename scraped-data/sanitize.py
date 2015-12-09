@@ -24,7 +24,14 @@ def main(argv):
     except getopt.GetoptError:
         print "sanitize.py -i <inputcsvfile> -o <outputcsvfile>"
         sys.exit(2)
-    for opt, arg in opts:
+    #for opt, arg in opts: <-- was only giving 1 tuple for some reason
+    for pair in opts:
+        print "pair: " + str(pair)
+    for pair in opts:
+        opt = pair[0]
+        arg = pair[1]
+        print "opt,arg: " + opt + ',' + arg
+        print "pair: " + str(pair)
         if opt == '-h':
             print "sanitize.py -i <inputcsvfile> -o <outputcsvfile>"
         elif opt == '-i':
@@ -55,15 +62,17 @@ def main(argv):
 
 def cleanup(inputfile, intermediate):
     # cleanup cleanup everybody cleanup
-    with open(inputfile, 'rb') as f:
+    with open(inputfile, 'rb') as f_in: #, open(intermediate, 'w+') as f_out:
+        print "intermediate: " + intermediate#debug
         desc_col = 2
         user_col = 1
         link_col = 0
         rownum = 0
-        reader = csv.reader(f)
+        reader = csv.reader(f_in)
         for row in reader:
             # double check format
             if rownum == 0:
+                print "Row is: " + str(type(row))
                 assert(row[0] == 'link')
                 assert(row[1] == 'user')
                 assert(row[2] == 'desc')
@@ -101,6 +110,8 @@ def cleanup(inputfile, intermediate):
 
                     print "Comment(Sanitized): " + repr(comment)
                     print ".."
+
+                    #output to intermediate file
             rownum += 1
 
 def cleanvocab(intermediate, outputfile):
