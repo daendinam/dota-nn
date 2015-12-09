@@ -73,10 +73,11 @@ def cleanup(inputfile, intermediate):
                 threadlink = row[link_col]
                 comment = row[desc_col]
                 # debug, don't do entire file yet
-                if rownum > 90:
-                    #print "Username: " + username
-                    #print "Link: " + threadlink
-
+                if rownum > 9:
+                    exit(0)
+                if rownum > 0:
+                    print "User: " + username
+                    print "Comment(Original): " + repr(comment)
                     # remove newlines and return cairrage
                     comment = re.sub('[\n\r]+', '', comment)
                     # filter out non-alphanumeric/punctuation
@@ -88,19 +89,18 @@ def cleanup(inputfile, intermediate):
                     # ^ can only really be done from 3+ to 3 i think
 
                     # replace multiple punctuation marks with just 1
-                    # replace multiple DIFFERENT punctuation with '.'
-
-                    # deal with jibberish?
-                    # alphanumeric jibberish will be trimmed in vocab
-                    # deal with punctuation jibberish
-                    #   -> if its not removed above, can replace it with nothing at all?
-
+                    # replace spaced out repeated punctuation
+                    # ie: " . . , . ! !!'
+                    comment = re.sub(r'([^\w\s])\s+(?=[^\w\s])', r'\1', comment)
+                    # replace multiple DIFFERENT punctuation with first
+                    comment = re.sub(r'([^\w\s])([^\w\s]+)', r'\1', comment)
                     # put 1 space between words and punctuation, and between a word and " 's "
+                    # not between ' and s, remove non punc? (@^$ etc)
+                    comment = re.sub(r"(\w+)([^\w\s])|([^\w\s'])(\w+)",
+                            r'\1 \2', comment)
 
-                    print "Comment(Literal): " + repr(comment)
-
-                if rownum > 150:
-                    exit(0)
+                    print "Comment(Sanitized): " + repr(comment)
+                    print ".."
             rownum += 1
 
 def cleanvocab(intermediate, outputfile):
