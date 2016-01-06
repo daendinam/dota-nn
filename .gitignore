@@ -1,3 +1,15 @@
+# Logs and databases #
+#####################
+*.log
+*.sql
+*.sqlite
+
+# python compiled files #
+*.pyc
+
+# scraped data (dota-nn) #
+*.csv
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
