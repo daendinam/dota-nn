@@ -10,6 +10,8 @@
 # scraped data (dota-nn) #
 *.csv
 
+csc321/
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

@@ -181,8 +181,7 @@ class Model(object):
                 i.e. the (i, j) entry is 1 if the i'th word is j, and 0 otherwise."""
         
         ###########################   YOUR CODE HERE  ##############################
-	#test
-
+        return output_activations - expanded_target_batch
         ############################################################################
 
 
@@ -251,8 +250,12 @@ class Model(object):
 
 
         ###########################   YOUR CODE HERE  ##############################
-
-
+        #fill in the derivative computations for hid_to_output_weights_grad, output_bias_grad,
+        #embed_to_hid_weights_grad, and hid_bias_grad.
+        hid_to_output_weights_grad = np.dot(loss_derivative.T, activations.hidden_layer)
+        output_bias_grad = np.sum(loss_derivative, 0)
+        embed_to_hid_weights_grad = np.dot(hid_deriv.T, activations.embedding_layer)
+        hid_bias_grad = np.sum(hid_deriv, 0)
         ############################################################################
 
 
@@ -348,12 +351,12 @@ class Model(object):
         """Plot a 2-D visualization of the learned representations using t-SNE."""
         
         mapped_X = tsne.tsne(self.params.word_embedding_weights)
-        pylab.figure()
+        fig = pylab.figure(figsize=(60,80))
         for i, w in enumerate(self.vocab):
             pylab.text(mapped_X[i, 0], mapped_X[i, 1], w)
         pylab.xlim(mapped_X[:, 0].min(), mapped_X[:, 0].max())
         pylab.ylim(mapped_X[:, 1].min(), mapped_X[:, 1].max())        
-
+        #pylab.savefig('tsne.png', dpi = 300)
 
 
 _train_inputs = None
@@ -367,7 +370,7 @@ def find_occurrences(word1, word2, word3):
     # cache the data so we don't keep reloading
     global _train_inputs, _train_targets, _vocab
     if _train_inputs is None:
-        data_obj = cPickle.load(open('data.pk', 'rb'))
+        data_obj = cPickle.load(open('reddit-full-freq4000data.pk', 'rb'))
         _vocab = data_obj['vocab']
         _train_inputs, _train_targets = data_obj['train_inputs'], data_obj['train_targets']
     
@@ -408,7 +411,7 @@ def train(embedding_dim, num_hid, config=DEFAULT_TRAINING_CONFIG):
         num_hid, the number of hidden units."""
     
     # Load the data
-    data_obj = cPickle.load(open('data.pk', 'rb'))
+    data_obj = cPickle.load(open('reddit-full-freq4000data.pk', 'rb'))
     vocab = data_obj['vocab']
     train_inputs, train_targets = data_obj['train_inputs'], data_obj['train_targets']
     valid_inputs, valid_targets = data_obj['valid_inputs'], data_obj['valid_targets']

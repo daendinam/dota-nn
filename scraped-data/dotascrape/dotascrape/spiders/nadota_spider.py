@@ -1,5 +1,4 @@
 import scrapy
-# import cfscrape
 
 from dotascrape.items import DotaCommentItem
 
@@ -31,37 +30,13 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML
 class NadotaSpider(scrapy.Spider):
     name = "nadota"
     allowed_domains = ["nadota.com"]
-    #allowed_domains = ["googleusercontent.com"]
 
     start_urls = [
        "http://nadota.com/forumdisplay.php?29-DotA-Chat"
-       #"https://webcache.googleusercontent.com/search?q=cache:5xGpTDffnQUJ:nadota.com/forumdisplay.php%3F29-DotA-Chat+&cd=1&hl=en&ct=clnk&gl=ca"
     ]
 
     PAGE_LIMIT = 100000
     page_count = 0
-    #override parse_start_url of Spider class to deal with cloudflare cookie
-    #https://mktums.github.io/article/dealing-with-cloudflare-in-scrapy.html
-    #def parse_start_url(self, response):
-    #    self.cookie = response.headers.get('Set-Cookie').split(';')[0]
-    #    return super(Spider, self).parse_start_url(response)
-
-
-    #def start_requests(self):
-    #    cfscraper = cfscrape.create_scraper()
-    #    filename = 'nadota.html'
-    #    with open(filename, 'wb') as f:
-    #        f.write(cfscraper.get("http://nadota.com/forumdisplay.php?29-DotA-Chat").content)
-    #
-    #    cf_requests = []
-    #    for url in self.start_urls:
-    #        token, agent = cfscrape.get_tokens(url, USER_AGENT)
-    #        #token, agent = cfscrape.get_tokens(url)
-    #        cf_requests.append(scrapy.Request(url=url, cookies={'__cfduid': token['__cfduid']}, headers={'User-Agent': agent}))
-    #        print "useragent in cfrequest: " , agent
-    #        print "token in cfrequest: ", token
-    #    return cf_requests
-
     def parse(self, response):
             yield scrapy.Request(response.url, callback=self.parse_follow_next_page)
 

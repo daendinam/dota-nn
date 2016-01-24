@@ -1,4 +1,5 @@
 import scrapy
+import time
 
 from dotascrape.items import DotaCommentItem
 
@@ -6,18 +7,25 @@ class RedditSpider(scrapy.Spider):
     name = "reddit"
     allowed_domains = ["reddit.com"]
     start_urls = [
-       #"http://www.reddit.com/r/dota2/",
        "https://www.reddit.com/r/DotA2/top/?sort=top&t=all"
     ]
     PAGE_LIMIT = 100000
     page_count = 0
 
     def parse(self, response):
-        yield scrapy.Request(response.url, callback=self.parse_follow_next_page)
+        # old spider searched from top of subreddit, but this has limit of 1000 threads
+        # - now uses search in time intervals to get full history
+        start = 1293840000 #2011/1/1
+        finish = start + 86400 #number of seconds in a day
+        while finish <= (int(time.time()) + 86400):
+            url = "http://reddit.com/r/DotA2/search?q=(and+subreddit:'dota2'+timestamp:" \
+                   + str(start) + ".." + str(finish) + ")&syntax=cloudsearch&sort=new"
+            start = finish
+            finish = start + 86400
+            yield scrapy.Request(url, callback=self.parse_follow_next_page)
 
     def parse_comments(self, response):
-        #<div class="usertext-body may-blank-within md-container "> <-- space at the end?
-        #   <div class="md">
+        #<div class="usertext-body may-blank-within md-container ">
         #       <p> comment body </p>
         # ...
         for comment in response.xpath("//div[contains(@class, 'usertext-body')" \
@@ -33,9 +41,9 @@ class RedditSpider(scrapy.Spider):
 	    yield item
 
     def parse_follow_next_page(self, response):
-        for commentlink in response.xpath("//a[contains(@class, 'comments') and contains(@class, 'may-blank')]/@href"):
-            #("//a[@class="comments may-blank"]/@href"):
-            #<a class="comments may-blank"/> <-- comment links
+        for commentlink in response.xpath("//a[contains(@class, 'search-comments') and contains(@class, 'may-blank')]/@href"):
+            #("//a[@class="search-comments may-blank"]/@href"):
+            #<a class="search-comments may-blank"/> <-- comment links
             url = response.urljoin(commentlink.extract())
             yield scrapy.Request(url, callback=self.parse_comments)
 
