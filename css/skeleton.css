@@ -178,6 +178,9 @@ input::-moz-focus-inner {
     padding: 0
 }
 
+blockquote {
+    font-size: 0.9em;
+}
 input {
     line-height: normal
 }
@@ -473,7 +476,9 @@ p {
 }
 
 .columns img {
-    max-width: 90%;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #68746D;
 }
 @media (min-width:400px) {
     .container {
