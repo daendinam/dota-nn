@@ -38,7 +38,10 @@
                         If we choose sources dedicated to a niche topic (Ex: a specific
                         video game), how will the model handle topic-specific words (Ex: character and spell names) and slang?
                         Is the 'noise' from casual English (slang, misspellings, mixed grammar, etc.) significant enough to discount
-                        using this type of data for learning exercises?
+                        using this type of data for learning exercises?<br>
+                        <h6>This was quick exercise to help me brush up on the basics of neural networks. The slides
+                            from <a href="https://www.coursera.org/course/neuralnets">this course</a>
+                            were very helpful in learning the core concepts.</h6>
                     </p>
 
                     <h3>Model</h3>
@@ -105,6 +108,7 @@ By spamming meepo .</pre>
                     </p>   
                     <h3>Results</h3>
                         <h5>NADota</h5>
+                        <div class="statsbox">
                         <h6>
                         Total comments scraped: ~490,000<br>
                         Word occurrence threshold: 500<br>
@@ -113,6 +117,7 @@ By spamming meepo .</pre>
                         Total validation and training set sizes: 84,900 (25%, 25%)<br>
                         Training settings: Embedding dimension 16, hidden units 128.<br>
                         </h6>
+                        </div>
                         <p>
                         Because this dataset was fairly small compared to reddit, it serves mainly as a proof of concept to have confidence
                         in moving onto the much larger dataset. 
@@ -162,6 +167,7 @@ By spamming meepo .</pre>
                         </p>
                         
                         <h5>Reddit</h5>
+                        <div class="statsbox">
                         <h6>
                         Total comments scraped: ~10 million<br>
                         Word occurrence threshold: 4000<br>
@@ -170,6 +176,7 @@ By spamming meepo .</pre>
                         Total validation and training set sizes: 1,046,400 (10%,10%)<br>
                         Training settings: Embedding dimension 16, hidden units 128.<br>
                         </h6>
+                        </div>
                         <p>
                         This data set is much much larger, so hopefully we'll see interesting results.
                         </p>
@@ -199,11 +206,12 @@ correctly learning to make Prob: 0.01940
                         <p>
                         Again we can see good examples of the model closely relating grammatically and semantically similar words:
                         </p>
-                        <img src="images/reddit-1.png"><br>
-                        <img src="images/reddit-7.png"><br>
-                        <img src="images/reddit-2.png"><br>
-                        <img src="images/reddit-3.png"><br>
-                        <img src="images/reddit-4.png">
+                        <!--<img src="images/reddit-1.png">
+                        <img src="images/reddit-7.png">
+                        <img src="images/reddit-2.png">
+                        <img src="images/reddit-3.png">
+                        <img src="images/reddit-4.png">-->
+                        <img src="images/reddit-9.png">
                         <p>
                         The last one is pretty interesting when you notice the model clusters adverbs together, as well as clustering
                         those adverbs that are similar in meaning - the ones pictured all having some relation to time.
@@ -232,13 +240,13 @@ correctly learning to make Prob: 0.01940
                         <p>
                         What does this mean? Using data found online can be a reasonable method of developing a learning model for
                         a specific context. Insights can be made about the way language evolves and morphs between different communities
-                        in a really interesting way. What's most exciting is that we've shown it is possible to learn from imperfectly 
+                        in a really interesting way. What's pretty cool is that we've shown it is possible to learn from imperfectly 
                         formed data (spelling mistakes, spam, etc.), and still come up with a model that has a reasonable grasp on
                         grammar, all without manually digging through the data to clean it up. 
                         </p>
                         
                         
-                        <h6>Creative commons message/w.e at end</h6>
+                        <h6>All code is up on github and free to use. Please attribute where possible.</h6>
                 </div>
             <div class="row">
                 <div class="footer sb-width">
@@ -249,7 +257,7 @@ correctly learning to make Prob: 0.01940
                     </div>
 
                     <hr>
-                    <p>Dan Telatnik © 2015</p>
+                    <p>Dan Telatnik 2016</p>
                 </div>
             </div>
         </div>

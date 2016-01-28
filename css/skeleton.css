@@ -327,6 +327,9 @@ h3 {
     letter-spacing: -.1rem
 }
 
+div.statsbox {
+    border: 1px solid #68746D; 
+}
 .target>div {
     opacity: 0;
     height: 0;
@@ -418,7 +421,7 @@ h3,
 h4,
 h5,
 h6 {
-    margin-top: 0;
+    margin-top: 1rem;
     margin-bottom: 2rem;
     font-family: Inconsolata;
     color: #68746D
